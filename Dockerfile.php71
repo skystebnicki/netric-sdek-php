@@ -1,0 +1,32 @@
+FROM php:7.1-cli
+
+# Setup PHP and apache
+RUN apt-get update && apt-get install -y \
+        python \
+        python-pip \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libpng12-dev \
+		libz-dev \
+		libpq-dev \
+		libxml2-dev \
+		libneon27-dev \
+		unzip \
+		git \
+		curl \
+    && docker-php-ext-install -j$(nproc) iconv mcrypt \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+# Install pywatch for watching file changes
+RUN pip install pywatch
+
+# Copy configs for php
+#COPY docker/server/conf/php-devel-ini.conf /usr/local/etc/php/php.ini
+
+WORKDIR /var/www/html
+
+ENTRYPOINT php composer.phar install && php composer.phar update && pywatch "./vendor/bin/phpunit -c ./test/phpunit.xml" ./src/ ./test/NetricSDKTest/

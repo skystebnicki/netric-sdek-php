@@ -4,6 +4,9 @@ namespace NetricSDKTest\EntityCollection;
 use PHPUnit_Framework_TestCase;
 use NetricSDK\EntityCollection\Where;
 
+/**
+ * Make sure the Where conditions work
+ */
 class WhereTest extends PHPUnit_Framework_TestCase
 {
 	public function testEquals()

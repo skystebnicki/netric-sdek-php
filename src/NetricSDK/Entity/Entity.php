@@ -5,7 +5,10 @@
 namespace NetricSDK\Entity;
 
 /**
- * Base object class
+ * Base/default entity
+ *
+ * This may be extended in the ./Type/* classes but that is usually not needed.
+ * If you do need to extend it just be sure to add the new type to the EntityFactory
  */
 class Entity
 {

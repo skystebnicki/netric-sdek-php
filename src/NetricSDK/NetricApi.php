@@ -4,6 +4,9 @@ namespace NetricSDK;
 use NetricSDK\EntityCollection\EntityCollection;
 use NetricSDK\Entity\Entity;
 
+/**
+ * Main API service
+ */
 class NetricApi
 {
 	/**
