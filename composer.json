@@ -1,5 +1,5 @@
 {
-  "name": "netric-sdk-php",
+  "name": "netric/netric-sdk-php",
   "description": "Netric PHP SDK",
   "license": "Commercial",
   "homepage": "http://www.netric.com/",
