@@ -88,6 +88,13 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($task->name, $taskFromServer->name);
 	}
 
+	public function testGetEntityGroupings()
+	{
+		// Users will always have at least one group
+		$groupings = $this->apiCaller->getEntityGroupings("user", "groups");
+		$this->assertGreaterThanOrEqual(1, $groupings);
+	}
+
 	/**
 	 * Query the backend for entities that match the passed query conditions and set the collection
 	 */
@@ -109,4 +116,6 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 		$entity = $collection->getEntity();
 		$this->assertEquals($uniqueTaskname, $entity->name);
 	}
+
+	
 }

@@ -54,6 +54,18 @@ class NetricApi
 	}
 
 	/**
+	 * Retrieve an entity groupings from the server
+	 *
+	 * @param string $objType The type of entity to get
+	 * @param string $fieldName The grouping field
+	 * @param return Entity\EntityGrouping[]
+	 */
+	public function getEntityGroupings($objType, $fieldName)
+	{
+		return $this->apiCaller->getEntityGroupings($objType, $fieldName);
+	}
+
+	/**
 	 * Save an entity to the server
 	 *
 	 * @param Entity $entity Any entity to save

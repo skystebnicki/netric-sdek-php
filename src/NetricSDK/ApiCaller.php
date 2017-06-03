@@ -4,6 +4,7 @@ namespace NetricSDK;
 use NetricSDK\EntityCollection\EntityCollection;
 use NetricSDK\Entity\EntityFactory;
 use NetricSDK\Entity\Entity;
+use NetricSDK\Entity\EntityGrouping;
 
 /**
  * Main class used to make REST API calls to a netric server
@@ -124,6 +125,29 @@ class ApiCaller implements ApiCallerInterface
 			return null;
 		}
 	}
+
+	/**
+	 * Get object definition based on an object type
+	 *
+     * @param string $objType The object type name
+     * @param string $fieldName The field name to get grouping data for
+	 * @return \Netric\Models\EntityGrouping[]
+	 */
+	public function getEntityGroupings($objType, $fieldName)
+    {
+        if (!$objType || !$fieldName)
+            return array();
+            
+        $params = array("obj_type"=>$objType, "field_name"=>$fieldName);
+		$groupsData = $this->sendRequest("entity", "get-groupings", $params, "GET");
+
+        // Initialize heiarachial array of groupings
+        if (isset($groupsData['groups'])) {
+	        return $this->loadEntityGropingFromData($groupsData['groups']);
+        } else {
+        	return array();
+        }
+    }
 
 	/**
 	 * Query the backend for entities that match the passed query conditions and set the collection
@@ -309,4 +333,50 @@ class ApiCaller implements ApiCallerInterface
 
 		return $entity;
 	}
+
+	/**
+     * Initialize heiarachial array of groupings
+     * 
+     * @param type $groupsData
+     * @return EntityGrouping[]
+     */
+    private function loadEntityGropingFromData($groupsData)
+    {
+        $groupings = array();
+
+        if ($groupsData && !isset($groupsData->error))
+        {
+            foreach ($groupsData as $grpData)
+            {
+                $grp = new EntityGrouping();
+                
+                foreach ($grpData as $fname=>$fval)
+                {
+                    switch($fname)
+                    {
+                    case "heiarch":
+                        $fname = "isHeiarch";
+                        break;
+                    case "parent_id":
+                        $fname = "parantId";
+                        break;
+                    case "sort_order":
+                        $fname = "sortOrder";
+                        break;
+                    default:
+                        break;
+                    }
+                    
+                    $grp->setValue($fname, $fval);
+                }
+                
+				if (isset($grpData->children))
+                	$grp->children = $this->loadEntityGropingFromData($grpData->children);
+                
+                $groupings[] = $grp;
+            }
+        }
+        
+        return $groupings;
+    }
 }
