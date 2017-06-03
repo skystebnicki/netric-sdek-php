@@ -207,7 +207,7 @@ class ApiCaller implements ApiCallerInterface
 		$url = $this->server . "/api/" . self::API_VERSION . "/$controller/$action";
 
 		if (!$this->authToken) {
-			return $this->getAuthTokenThenSendRequest($controller, $action, $data);
+			return $this->getAuthTokenThenSendRequest($controller, $action, $data, $method);
 		}
 
 		// If the method is GET then we should append query params
@@ -269,7 +269,7 @@ class ApiCaller implements ApiCallerInterface
      * @param array $data Params (assoc) to be sent to the controller
      * @return mixed -1 on falure, string resonse on success
      */
-	private function getAuthTokenThenSendRequest($controller, $action, $data)
+	private function getAuthTokenThenSendRequest($controller, $action, $data, $method)
 	{
 		// Call auth to get a token
 		$this->authToken = $this->getAuthToken();
@@ -278,7 +278,7 @@ class ApiCaller implements ApiCallerInterface
 			throw new \Exception("Could not get auth token for some reason");
 		}
 
-		return $this->sendRequest($controller, $action, $data);
+		return $this->sendRequest($controller, $action, $data, $method);
 	}
 
 	/**
