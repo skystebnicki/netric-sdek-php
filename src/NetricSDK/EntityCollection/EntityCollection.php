@@ -353,7 +353,7 @@ class EntityCollection
     public function load()
     {
         if ($this->apiCaller)
-            return $this->apiCaller->queryEntities($this);
+            return $this->apiCaller->loadCollection($this);
         else
             return false;
     }
