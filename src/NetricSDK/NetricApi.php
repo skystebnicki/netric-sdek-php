@@ -3,6 +3,7 @@ namespace NetricSDK;
 
 use NetricSDK\EntityCollection\EntityCollection;
 use NetricSDK\Entity\Entity;
+use NetricSDK\Entity\EntityIdentityMapper;
 
 /**
  * Main API service
@@ -17,6 +18,13 @@ class NetricApi
 	private $apiCaller = null;
 
 	/**
+	 * Identity ampper for loading entities and keeping only one instance in memeory at once
+	 *
+	 * @param EntityIdentityMapper
+	 */
+	private $identityMapper = null;
+
+	/**
 	 * Constructor will setup API connection credentials
 	 *
 	 * @param string $server The server we are connecting to
@@ -26,6 +34,7 @@ class NetricApi
 	public function __construct($server, $applicationId, $applicationKey)
 	{
 		$this->apiCaller = new ApiCaller($server, $applicationId, $applicationKey);
+		$this->identityMapper = new EntityIdentityMapper($this->apiCaller);
 	}
 
 	/**
@@ -50,7 +59,19 @@ class NetricApi
 	 */
 	public function getEntity($objType, $id)
 	{
-		return $this->apiCaller->getEntity($objType, $id);
+		return $this->identityMapper->getById($objType, $id);
+	}
+
+	/**
+	 * Load an entity from the server by uname
+	 *
+	 * @param string $objType The type of entity to get
+	 * @param string $id The unique id of the entity to load
+	 * @return Entity
+	 */
+	public function getEntityByUniqueName($objType, $uniqueName, $namespaceConditions = [])
+	{
+		return $this->identityMapper->getByUniqueName($objType, $uniqueName, $namespaceConditions);
 	}
 
 	/**

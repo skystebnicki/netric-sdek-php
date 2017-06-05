@@ -121,6 +121,31 @@ class ApiCaller implements ApiCallerInterface
 		$ret = $this->sendRequest("entity", "get", $data, 'GET');
 		if (is_array($ret) && isset($ret['obj_type']) && isset($ret['id'])) {
 			return $this->loadEntityFromData($ret);
+		} else if (isset($ret['error'])) {
+			throw new \RuntimeException("Could not get entity: " . $ret['error']);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Retrieve an entity by id
+	 *
+	 * @param string $objType The name of object this entity represents - like 'user'
+	 * @param string $id the Unique id of the entity to load
+	 * @param array $namespaceCondtiions Optional namesapce conditions
+	 * @return Entity the populated entity if found, or null if it does not exist
+	 */
+	public function getEntityByUniqueName($objType, $uname, array $namespaceCondtiions = [])
+	{
+		$data = [
+			'obj_type'=>$objType, 
+			'uname'=>$uname,
+			'uname_conditions' => $namespaceCondtiions
+		];
+		$ret = $this->sendRequest("entity", "get", $data);
+		if (is_array($ret) && isset($ret['obj_type']) && isset($ret['id'])) {
+			return $this->loadEntityFromData($ret);
 		} else {
 			return null;
 		}
@@ -255,10 +280,7 @@ class ApiCaller implements ApiCallerInterface
 			}
 		}
 
-		$headers = [
-			'Content-Type: application/json',
-			'Authentication: ' . $this->authToken
-		];
+		$headers = ['Authentication: ' . $this->authToken];
 
 		$ch = curl_init($url);
 		// set to 0 to eliminate header info from response
@@ -268,6 +290,7 @@ class ApiCaller implements ApiCallerInterface
 		if ($method === 'POST') {
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+			$headers[] = 'Content-Type: application/json';
 		}
 		
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
