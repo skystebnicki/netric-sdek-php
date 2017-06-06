@@ -347,7 +347,12 @@ class ApiCaller implements ApiCallerInterface
 			if (substr($fieldName, -5, 5) != '_fval') {
 				// If we are working with fkey, fkey_multi, object, object_multi, then use _fval version
 				if (isset($data[$fieldName . "_fval"])) {
-					$entity->$fieldName = $data[$fieldName . "_fval"];
+					$fieldValues = [];
+					foreach ($data[$fieldName . "_fval"] as $id=>$name) {
+
+						$fieldValues[] = ['id'=>$id, 'name'=>$name];
+					}
+					$entity->$fieldName = $fieldValues;
 				} else {
 					$entity->$fieldName = $fieldValue;
 				}
