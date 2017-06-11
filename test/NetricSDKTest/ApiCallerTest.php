@@ -90,6 +90,27 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * Retrieve an entity by id
+	 */
+	public function testGetEntityByUniqueName()
+	{
+		$page = new Entity("cms_page");
+		$page->name = "testGetEntityByUniqueName";
+		$this->apiCaller->saveEntity($page);
+		$this->testEntities[] = $page;
+
+		$pageFromServer = $this->apiCaller->getEntityByUniqueName("cms_page", $page->uname);
+		$this->assertEquals($page->name, $pageFromServer->name);
+	}
+
+	public function testGetEntityGroupings()
+	{
+		// Users will always have at least one group
+		$groupings = $this->apiCaller->getEntityGroupings("user", "groups");
+		$this->assertGreaterThanOrEqual(1, $groupings);
+	}
+
+	/**
 	 * Query the backend for entities that match the passed query conditions and set the collection
 	 */
 	public function testLoadCollection()

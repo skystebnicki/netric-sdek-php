@@ -4,6 +4,7 @@ namespace NetricSDK;
 use NetricSDK\EntityCollection\EntityCollection;
 use NetricSDK\Entity\EntityFactory;
 use NetricSDK\Entity\Entity;
+use NetricSDK\Entity\EntityGrouping;
 
 /**
  * Main class used to make REST API calls to a netric server
@@ -130,6 +131,52 @@ class ApiCaller implements ApiCallerInterface
 	}
 
 	/**
+	 * Retrieve an entity by id
+	 *
+	 * @param string $objType The name of object this entity represents - like 'user'
+	 * @param string $id the Unique id of the entity to load
+	 * @param array $namespaceCondtiions Optional namesapce conditions
+	 * @return Entity the populated entity if found, or null if it does not exist
+	 */
+	public function getEntityByUniqueName($objType, $uname, array $namespaceCondtiions = [])
+	{
+		$data = [
+			'obj_type'=>$objType, 
+			'uname'=>$uname,
+			'uname_conditions' => $namespaceCondtiions
+		];
+		$ret = $this->sendRequest("entity", "get", $data);
+		if (is_array($ret) && isset($ret['obj_type']) && isset($ret['id'])) {
+			return $this->loadEntityFromData($ret);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Get object definition based on an object type
+	 *
+     * @param string $objType The object type name
+     * @param string $fieldName The field name to get grouping data for
+	 * @return \Netric\Models\EntityGrouping[]
+	 */
+	public function getEntityGroupings($objType, $fieldName)
+    {
+        if (!$objType || !$fieldName)
+            return array();
+            
+        $params = array("obj_type"=>$objType, "field_name"=>$fieldName);
+		$groupsData = $this->sendRequest("entity", "get-groupings", $params, "GET");
+
+        // Initialize heiarachial array of groupings
+        if (isset($groupsData['groups'])) {
+	        return $this->loadEntityGropingFromData($groupsData['groups']);
+        } else {
+        	return array();
+        }
+    }
+
+	/**
 	 * Query the backend for entities that match the passed query conditions and set the collection
 	 *
 	 * @param EntityCollection $collection A collection to query and set entities into
@@ -211,7 +258,7 @@ class ApiCaller implements ApiCallerInterface
 		$url = $this->server . "/api/" . self::API_VERSION . "/$controller/$action";
 
 		if (!$this->authToken) {
-			return $this->getAuthTokenThenSendRequest($controller, $action, $data);
+			return $this->getAuthTokenThenSendRequest($controller, $action, $data, $method);
 		}
 
 		// If the method is GET then we should append query params
@@ -247,6 +294,7 @@ class ApiCaller implements ApiCallerInterface
 		    $headers[] = 'Content-Type: application/json';
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+			$headers[] = 'Content-Type: application/json';
 		}
 		
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -273,7 +321,7 @@ class ApiCaller implements ApiCallerInterface
      * @return mixed -1 on falure, string resonse on success
      * @throws \Exception If we were unable to get an auth token
      */
-	private function getAuthTokenThenSendRequest($controller, $action, $data)
+	private function getAuthTokenThenSendRequest($controller, $action, $data, $method)
 	{
 		// Call auth to get a token
 		$this->authToken = $this->getAuthToken();
@@ -282,7 +330,7 @@ class ApiCaller implements ApiCallerInterface
 			throw new \Exception("Could not get auth token for some reason");
 		}
 
-		return $this->sendRequest($controller, $action, $data);
+		return $this->sendRequest($controller, $action, $data, $method);
 	}
 
 	/**
@@ -304,7 +352,12 @@ class ApiCaller implements ApiCallerInterface
 			if (substr($fieldName, -5, 5) != '_fval') {
 				// If we are working with fkey, fkey_multi, object, object_multi, then use _fval version
 				if (isset($data[$fieldName . "_fval"])) {
-					$entity->$fieldName = $data[$fieldName . "_fval"];
+					$fieldValues = [];
+					foreach ($data[$fieldName . "_fval"] as $id=>$name) {
+
+						$fieldValues[] = ['id'=>$id, 'name'=>$name];
+					}
+					$entity->$fieldName = $fieldValues;
 				} else {
 					$entity->$fieldName = $fieldValue;
 				}
@@ -313,4 +366,50 @@ class ApiCaller implements ApiCallerInterface
 
 		return $entity;
 	}
+
+	/**
+     * Initialize heiarachial array of groupings
+     * 
+     * @param type $groupsData
+     * @return EntityGrouping[]
+     */
+    private function loadEntityGropingFromData($groupsData)
+    {
+        $groupings = array();
+
+        if ($groupsData && !isset($groupsData->error))
+        {
+            foreach ($groupsData as $grpData)
+            {
+                $grp = new EntityGrouping();
+                
+                foreach ($grpData as $fname=>$fval)
+                {
+                    switch($fname)
+                    {
+                    case "heiarch":
+                        $fname = "isHeiarch";
+                        break;
+                    case "parent_id":
+                        $fname = "parantId";
+                        break;
+                    case "sort_order":
+                        $fname = "sortOrder";
+                        break;
+                    default:
+                        break;
+                    }
+                    
+                    $grp->setValue($fname, $fval);
+                }
+                
+				if (isset($grpData->children))
+                	$grp->children = $this->loadEntityGropingFromData($grpData->children);
+                
+                $groupings[] = $grp;
+            }
+        }
+        
+        return $groupings;
+    }
 }

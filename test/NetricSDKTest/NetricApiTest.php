@@ -77,6 +77,30 @@ class NetricApiTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * Retrieve an entity by id
+	 */
+	public function testGetEntityByUniqueName()
+	{
+		$page = new Entity("cms_page");
+		$page->name = "testGetEntityByUniqueName";
+		$this->netricApi->saveEntity($page);
+		$this->testEntities[] = $page;
+
+		$pageFromServer = $this->netricApi->getEntityByUniqueName("cms_page", $page->uname);
+		$this->assertEquals($page->name, $pageFromServer->name);
+	}
+
+	/**
+	 * Validate that we can get an entity grouping from the API
+	 */
+	public function testGetEntityGroupings()
+	{
+		// Now make sure we can retrieve the task from the API
+		$entityGroupings = $this->netricApi->getEntityGroupings("user", "groups");
+		$this->assertGreaterThanOrEqual(1, $entityGroupings);
+	}
+
+	/**
 	 * Make sure we can save an entity through the API
 	 */
 	public function testSaveEntity()
