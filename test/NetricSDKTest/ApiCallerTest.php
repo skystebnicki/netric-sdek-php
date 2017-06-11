@@ -33,7 +33,7 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 		// The clientSecret is the user's password
 		$clientSecret = "password";
 
-		$this->apiCaller = new ApiCaller("http://devel.netric.com", $clientId, $clientSecret);
+		$this->apiCaller = new ApiCaller("http://integ.netric.com", $clientId, $clientSecret);
 	}
 
 	public function tearDown()
@@ -85,6 +85,7 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 		$this->testEntities[] = $task;
 
 		$taskFromServer = $this->apiCaller->getEntity("task", $task->id);
+		$this->assertNotNull($taskFromServer);
 		$this->assertEquals($task->name, $taskFromServer->name);
 	}
 
@@ -107,6 +108,7 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(1, $collection->getTotalNum());
 		$entity = $collection->getEntity();
+        $this->assertNotNull($entity);
 		$this->assertEquals($uniqueTaskname, $entity->name);
 	}
 }

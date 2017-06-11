@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
         libmcrypt-dev \
         libpng12-dev \
         libz-dev \
+        libmemcached-dev \
         libpq-dev \
         libxml2-dev \
         libneon27-dev \
@@ -16,6 +17,8 @@ RUN apt-get update && apt-get install -y \
         git \
         curl \
     && docker-php-ext-install -j$(nproc) iconv mcrypt \
+    && pecl install memcached \
+    && docker-php-ext-enable memcached \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
     && pecl install xdebug \

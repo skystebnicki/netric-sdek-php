@@ -89,6 +89,7 @@ class ApiCaller implements ApiCallerInterface
 	 * 
 	 * @param Entity $entity Either a new entity (with no id value set) or an existing entity
 	 * @return bool true on success, false on failure
+     * @throws \Exception if an invalid entity was passed
 	 */
 	public function deleteEntity(Entity $entity)
 	{
@@ -110,6 +111,7 @@ class ApiCaller implements ApiCallerInterface
 	 * @param string $objType The name of object this entity represents - like 'user'
 	 * @param string $id the Unique id of the entity to load
 	 * @return Entity the populated entity if found, or null if it does not exist
+     * @throw \RuntimeException if the API request fails
 	 */
 	public function getEntity($objType, $id)
 	{
@@ -119,7 +121,9 @@ class ApiCaller implements ApiCallerInterface
 		];
 		$ret = $this->sendRequest("entity", "get", $data, 'GET');
 		if (is_array($ret) && isset($ret['obj_type']) && isset($ret['id'])) {
-			return $this->loadEntityFromData($ret);
+            return $this->loadEntityFromData($ret);
+        } else if (is_array($ret) && isset($ret['error'])) {
+            throw new \RuntimeException("Error getting entity: " . $ret['error']);
 		} else {
 			return null;
 		}
@@ -185,7 +189,7 @@ class ApiCaller implements ApiCallerInterface
 		// Get data
 		$retData = json_decode($resp, true);
 		if ($retData['result'] != 'SUCCESS') {
-			throw new \Exception("Auth failed: " . $retData['reason']); 
+			throw new \Exception("Auth failed: " . var_export($retData, true));
 		}
 
 		// Return JSON decoded response
@@ -200,7 +204,7 @@ class ApiCaller implements ApiCallerInterface
      * @param array $data Params (assoc) to be sent to the controller
      * @param string $method Can either be GET or POST
      * @return mixed -1 on falure, string resonse on success
-     * @throws Exception
+     * @throws \Exception
      */
     private function sendRequest($controller, $action, $data, $method='POST')
 	{
@@ -231,10 +235,7 @@ class ApiCaller implements ApiCallerInterface
 			}
 		}
 
-		$headers = [
-			'Content-Type: application/json',
-			'Authentication: ' . $this->authToken
-		];
+		$headers = ['Authentication: ' . $this->authToken];
 
 		$ch = curl_init($url);
 		// set to 0 to eliminate header info from response
@@ -242,6 +243,8 @@ class ApiCaller implements ApiCallerInterface
 		// Returns response data instead of TRUE(1)
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		if ($method === 'POST') {
+		    // Make sure the header is set so netric knows to get the raw body
+		    $headers[] = 'Content-Type: application/json';
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 		}
@@ -268,6 +271,7 @@ class ApiCaller implements ApiCallerInterface
      * @param string $action The name of the action to call in the selected controller
      * @param array $data Params (assoc) to be sent to the controller
      * @return mixed -1 on falure, string resonse on success
+     * @throws \Exception If we were unable to get an auth token
      */
 	private function getAuthTokenThenSendRequest($controller, $action, $data)
 	{

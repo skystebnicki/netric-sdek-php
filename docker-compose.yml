@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  netric-sdk-php-71:
+    build:
+      context: .
+      dockerfile: Dockerfile.php71
+    environment:
+       APPLICATION_ENV: development
+       XDEBUG_CONFIG: "remote_host=${HOST_IP} remote_enable=1 remote_connect_back=1 remote_autostart=1"
+    volumes:
+     - .:/var/www/html
+    depends_on:
+     - memcached
+    links:
+     - memcached
+
+  memcached:
+    image: memcached

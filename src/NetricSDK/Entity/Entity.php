@@ -69,6 +69,7 @@ class Entity
      * Magic method for getting a value
      *
      * @param string $name The name of the field to set
+     * @return mixed Property value
      */
     public function __get($name)
     {
