@@ -148,7 +148,11 @@ class ApiCaller implements ApiCallerInterface
 		$ret = $this->sendRequest("entity", "get", $data);
 		if (is_array($ret) && isset($ret['obj_type']) && isset($ret['id'])) {
 			return $this->loadEntityFromData($ret);
-		} else {
+        } else if (is_array($ret) && isset($ret['error'])) {
+            throw new \RuntimeException(
+                "Error getting entity: " . $ret['error'] . ':' . var_export($data, true)
+            );
+        } else {
 			return null;
 		}
 	}
@@ -290,11 +294,10 @@ class ApiCaller implements ApiCallerInterface
 		// Returns response data instead of TRUE(1)
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		if ($method === 'POST') {
-		    // Make sure the header is set so netric knows to get the raw body
-		    $headers[] = 'Content-Type: application/json';
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-			$headers[] = 'Content-Type: application/json';
+            // Make sure the header is set so netric knows to get the raw body
+            $headers[] = 'Content-Type: application/json';
 		}
 		
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);

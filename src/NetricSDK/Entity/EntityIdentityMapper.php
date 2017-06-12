@@ -2,6 +2,7 @@
 namespace NetricSDK\Entity;
 
 use NetricSDK\ApiCaller;
+use NetricSDK\DataMapper\DataMapperInterface;
 
 /**
  * Make sure we have only one instance of an entity loaded at any given time
@@ -29,14 +30,22 @@ class EntityIdentityMapper
 	 */
 	private $uniqueNamesToIDs = [];
 
+    /**
+     * Optional datamapper for caching entities and other data
+     *
+     * @var DataMapperInterface
+     */
+	private $cacheDataMapper = null;
+
 	/**
 	 * Identity mapper constructor
 	 *
 	 * @param ApiCaller $apiCaller Used to make API calls to the server
 	 */
-	public function __construct(ApiCaller $apiCaller)
+	public function __construct(ApiCaller $apiCaller, DataMapperInterface $cacheDataMapper = null)
 	{
 		$this->apiCaller = $apiCaller;
+		$this->cacheDataMapper = $cacheDataMapper;
 	}
 
 	/**
@@ -48,6 +57,7 @@ class EntityIdentityMapper
 	 */
 	public function getById($objType, $id)
 	{
+	    // First check if we have the entity loaded in memory
 		if (isset($this->loadedEntities[$objType])) {
 			if (isset($this->loadedEntities[$objType][$id])) {
 				return $this->loadedEntities[$objType][$id];
@@ -57,11 +67,27 @@ class EntityIdentityMapper
 			$this->loadedEntities[$objType] = [];
 		}
 
-		$entity = $this->apiCaller->getEntity($objType, $id);
+		// We will try getting entity from multiple datamappers
+		$entity = null;
+
+		// Second check if we have have a cache datamapper to call
+        if ($this->cacheDataMapper) {
+            $entity = $this->cacheDataMapper->getEntity($objType, $id);
+        }
+
+		// Finally pull from the server if neither local memory or the cache datamapper have the data
+		if (!$entity) {
+            $entity = $this->apiCaller->getEntity($objType, $id);
+
+            // Put in cache for future requests
+            if ($this->cacheDataMapper) {
+                $this->cacheDataMapper->saveEntity($entity);
+            }
+        }
 
 		// Cache for future calls so we can keep it in memory
 		if ($entity) {
-			$this->loadedEntities[$objType][$id] = $entity;			
+			$this->loadedEntities[$objType][$id] = $entity;
 		}
 
 		return $entity;

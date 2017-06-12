@@ -4,6 +4,7 @@ namespace NetricSDK;
 use NetricSDK\EntityCollection\EntityCollection;
 use NetricSDK\Entity\Entity;
 use NetricSDK\Entity\EntityIdentityMapper;
+use NetricSDK\DataMapper\MemcachedDataMapper;
 
 /**
  * Main API service
@@ -30,11 +31,18 @@ class NetricApi
 	 * @param string $server The server we are connecting to
 	 * @param string $applicationId A unique ID supplied to grant access to the API for an application service user
 	 * @param string $applicationKey The private key used to sign all requests
+     * @param array $cacheConfig Optional configuration to use memcached or redis caching
 	 */
-	public function __construct($server, $applicationId, $applicationKey)
+	public function __construct($server, $applicationId, $applicationKey, array $cacheConfig = null)
 	{
 		$this->apiCaller = new ApiCaller($server, $applicationId, $applicationKey);
-		$this->identityMapper = new EntityIdentityMapper($this->apiCaller);
+		$cacheDataMapper = null;
+		if ($cacheConfig) {
+		    if ($cacheConfig['type'] === 'memcached' && isset($cacheConfig['server'])) {
+		        $cacheConfig = new MemcachedDataMapper($applicationId, $cacheConfig['server']);
+            }
+        }
+		$this->identityMapper = new EntityIdentityMapper($this->apiCaller, $cacheConfig);
 	}
 
 	/**
