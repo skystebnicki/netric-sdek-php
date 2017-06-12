@@ -113,11 +113,19 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 
         $this->apiCaller->setCache($this->cache);
 
-        $taskFromServer = $this->apiCaller->getEntity("task", $task->id);
+        $this->apiCaller->getEntity("task", $task->id);
 
         $this->assertNotNull($this->cache->getLastEntry());
         $cachedData = $this->cache->getLastEntry();
         $this->assertEquals($task->name, $cachedData['name']);
+
+        // Set fake data to the cache so we can make sure apiCaller is using it
+        $this->cache->set($this->cache->lastKeyWritten, ['obj_type'=>'customer', 'id'=>1234]);
+        $loadedFromCache = $this->apiCaller->getEntity("task", $task->id);
+
+        // We replaced the task key with the fake one above, see if it loaded the fake/cached data
+        $this->assertEquals('customer', $loadedFromCache->getType());
+        $this->assertEquals(1234, $loadedFromCache->id);
     }
 
 	/**

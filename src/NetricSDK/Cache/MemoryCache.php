@@ -18,7 +18,7 @@ class MemoryCache implements CacheInterface
      *
      * @var string
      */
-    private $lastKeyWriten = "";
+    public $lastKeyWritten = "";
 
     /**
      * Save data to cache
@@ -31,7 +31,7 @@ class MemoryCache implements CacheInterface
     public function set($key, $data, $expires=0)
     {
         $this->cache[$key] = $data;
-        $this->lastKeyWriten = $key;
+        $this->lastKeyWritten = $key;
         return true;
     }
 
@@ -57,6 +57,6 @@ class MemoryCache implements CacheInterface
      */
     public function getLastEntry()
     {
-        return $this->cache[$this->lastKeyWriten];
+        return $this->cache[$this->lastKeyWritten];
     }
 }
