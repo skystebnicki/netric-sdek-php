@@ -1,6 +1,7 @@
 <?php
 namespace NetricSDK;
 
+use NetricSDK\Cache\CacheInterface;
 use NetricSDK\EntityCollection\EntityCollection;
 use NetricSDK\Entity\EntityFactory;
 use NetricSDK\Entity\Entity;
@@ -44,18 +45,27 @@ class ApiCaller implements ApiCallerInterface
 	 */
 	private $authToken = "";
 
+    /**
+     * Cache to reduce the number of calls to the server
+     *
+     * @var CacheInterface
+     */
+	private $cache = null;
+
 	/**
 	 * Constructor will setup API connection credentials
 	 *
 	 * @param string $server The server we are connecting to
 	 * @param string $applicationId A unique ID supplied to grant access to the API for a specific application
 	 * @param string $applicationKey The private key used to sign all requests
+     * @param CacheInterface $cache Optional cache used to cache requests
 	 */
-	public function __construct($server, $applicationId, $applicationKey)
+	public function __construct($server, $applicationId, $applicationKey, CacheInterface $cache = null)
 	{
 		$this->server = $server;
 		$this->applicationId = $applicationId;
 		$this->applicationKey = $applicationKey;
+		$this->cache = $cache;
 	}
 
 	/**
@@ -120,7 +130,7 @@ class ApiCaller implements ApiCallerInterface
 			'obj_type'=>$objType, 
 			'id'=>$id
 		];
-		$ret = $this->sendRequest("entity", "get", $data, 'GET');
+		$ret = $this->sendRequest("entity", "get", $data, 'GET', 3000);
 		if (is_array($ret) && isset($ret['obj_type']) && isset($ret['id'])) {
             return $this->loadEntityFromData($ret);
         } else if (is_array($ret) && isset($ret['error'])) {
@@ -145,7 +155,7 @@ class ApiCaller implements ApiCallerInterface
 			'uname'=>$uname,
 			'uname_conditions' => $namespaceCondtiions
 		];
-		$ret = $this->sendRequest("entity", "get", $data);
+		$ret = $this->sendRequest("entity", "get", $data, 'POST',5000);
 		if (is_array($ret) && isset($ret['obj_type']) && isset($ret['id'])) {
 			return $this->loadEntityFromData($ret);
         } else if (is_array($ret) && isset($ret['error'])) {
@@ -170,7 +180,7 @@ class ApiCaller implements ApiCallerInterface
             return array();
             
         $params = array("obj_type"=>$objType, "field_name"=>$fieldName);
-		$groupsData = $this->sendRequest("entity", "get-groupings", $params, "GET");
+		$groupsData = $this->sendRequest("entity", "get-groupings", $params, "GET", 5000);
 
         // Initialize heiarachial array of groupings
         if (isset($groupsData['groups'])) {
@@ -205,16 +215,16 @@ class ApiCaller implements ApiCallerInterface
 		$queryData['order_by'] = $collection->getOrderBy();
 
 		// Call the server to get the query results
-		$ret = $this->sendRequest("entity-query", "execute", $queryData);
+        $data = $this->sendRequest("entity-query", "execute", $queryData, 'POST', 3000);
 
 		// Clear entities because we only want the current page loaded into memory
 		$collection->clearEntities();
-		$collection->setTotalNum($ret['total_num']);
-		foreach ($ret['entities'] as $entityData) {
+		$collection->setTotalNum($data['total_num']);
+		foreach ($data['entities'] as $entityData) {
 			$entity = $this->loadEntityFromData($entityData);
 			$collection->addEntity($entity);
 		}
-		return $ret['num'];
+		return $data['num'];
 	}
 
 	/**
@@ -247,6 +257,16 @@ class ApiCaller implements ApiCallerInterface
 		return $retData['session_token'];
 	}
 
+    /**
+     * Set or unset a cache interface
+     *
+     * @param CacheInterface|null $cache
+     */
+	public function setCache(CacheInterface $cache = null)
+    {
+        $this->cache = $cache;
+    }
+
 	/**
      * Send a request using the php api for netric
      * 
@@ -254,10 +274,11 @@ class ApiCaller implements ApiCallerInterface
      * @param string $action The name of the action to call in the selected controller
      * @param array $data Params (assoc) to be sent to the controller
      * @param string $method Can either be GET or POST
-     * @return mixed -1 on falure, string resonse on success
+     * @param int $cacheFor If set we will cache for this number of miliseconds
+     * @return mixed -1 on failure, string resonse on success
      * @throws \Exception
      */
-    private function sendRequest($controller, $action, $data, $method='POST')
+    private function sendRequest($controller, $action, $data, $method='POST', $cacheFor = 0)
 	{
 		$url = $this->server . "/api/" . self::API_VERSION . "/$controller/$action";
 
@@ -286,6 +307,16 @@ class ApiCaller implements ApiCallerInterface
 			}
 		}
 
+        $cacheKey = $method . "-" . $action . "-" . $controller . md5(json_encode($data));
+
+		// Check for caching
+        if ($this->cache && $cacheFor) {
+		    $cacheResponse = $this->cache->get($cacheKey);
+		    if ($cacheResponse) {
+		        return $cacheResponse;
+            }
+        }
+
 		$headers = ['Authentication: ' . $this->authToken];
 
 		$ch = curl_init($url);
@@ -306,6 +337,11 @@ class ApiCaller implements ApiCallerInterface
 		// execute post and get results
 		$resp = curl_exec($ch); 
 		$decodedData = json_decode($resp, true);
+
+		// If we are using cache then store the response for 3 seconds
+        if ($this->cache && $cacheFor && !isset($decodedData['error'])) {
+            $this->cache->set($cacheKey, $decodedData, $cacheFor);
+        }
 
 		curl_close($ch);
 

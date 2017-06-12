@@ -1,6 +1,8 @@
 <?php
 namespace NetricSDKTest;
 
+use NetricSDK\Cache\CacheInterface;
+use NetricSDK\Cache\MemoryCache;
 use PHPUnit_Framework_TestCase;
 use NetricSDK\ApiCaller;
 use NetricSDK\Entity\Entity;
@@ -15,8 +17,17 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * Instance of API caller to test
+     *
+     * @var ApiCaller
 	 */
 	private $apiCaller = null;
+
+    /**
+     * Instance of the ApiCaller with cache
+     *
+     * @var CacheInterface
+     */
+	private $cache = null;
 
 	/**
 	 * List of test entities created that will need to be cleaned up
@@ -34,6 +45,7 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 		$clientSecret = "password";
 
 		$this->apiCaller = new ApiCaller("http://integ.netric.com", $clientId, $clientSecret);
+		$this->cache = new MemoryCache();
 	}
 
 	public function tearDown()
@@ -88,6 +100,25 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 		$this->assertNotNull($taskFromServer);
 		$this->assertEquals($task->name, $taskFromServer->name);
 	}
+
+    /**
+     * Retrieve an entity by id
+     */
+    public function testGetEntityCached()
+    {
+        $task = new Entity("task");
+        $task->name = "test";
+        $this->apiCaller->saveEntity($task);
+        $this->testEntities[] = $task;
+
+        $this->apiCaller->setCache($this->cache);
+
+        $taskFromServer = $this->apiCaller->getEntity("task", $task->id);
+
+        $this->assertNotNull($this->cache->getLastEntry());
+        $cachedData = $this->cache->getLastEntry();
+        $this->assertEquals($task->name, $cachedData['name']);
+    }
 
 	/**
 	 * Retrieve an entity by id

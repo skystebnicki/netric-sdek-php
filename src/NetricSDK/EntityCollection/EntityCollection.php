@@ -90,13 +90,6 @@ class EntityCollection
      * @var Netric\Models\Collection\Aggregation\AggregationInterface[]
      */
     private $aggregations = array();
-
-    /**
-     * Data mapper for caching results
-     *
-     * @var DataMapperInterface
-     */
-    private $cacheDataMapper = null;
     
     /**
      * Class constructor
@@ -362,21 +355,8 @@ class EntityCollection
      */
     public function load()
     {
-        if ($this->cacheDataMapper) {
-            $found = $this->cacheDataMapper->loadCollection($this);
-
-            // If not found we will get -1, otherwise the collection is cached
-            if ($found !== -1) {
-                return $found;
-            }
-        }
-
         if ($this->apiCaller) {
-            $found = $this->apiCaller->loadCollection($this);
-            if ($this->cacheDataMapper) {
-                // TODO: Cache the list for faster loads next time
-            }
-            return $found;
+            return $this->apiCaller->loadCollection($this);
         }
         else
             return false;
@@ -436,16 +416,6 @@ class EntityCollection
     public function addAggregation(Collection\Aggregation\AbstractAggregation $agg)
     {
         $this->aggregations[$agg->getName()] = $agg;
-    }
-
-    /**
-     * Set datamapper for caching query results
-     *
-     * @param DataMapperInterface $cacheDataMapper
-     */
-    public function setCacheDataMapper(DataMapperInterface $cacheDataMapper)
-    {
-        $this->cacheDataMapper = $cacheDataMapper;
     }
 
     /**

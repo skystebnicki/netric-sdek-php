@@ -4,7 +4,7 @@ namespace NetricSDK;
 use NetricSDK\EntityCollection\EntityCollection;
 use NetricSDK\Entity\Entity;
 use NetricSDK\Entity\EntityIdentityMapper;
-use NetricSDK\DataMapper\MemcachedDataMapper;
+use NetricSDK\Cache\MemcachedCache;
 
 /**
  * Main API service
@@ -25,13 +25,6 @@ class NetricApi
 	 */
 	private $identityMapper = null;
 
-    /**
-     * Cache data mapper
-     *
-     * @var DataMapperInterface
-     */
-    private $cacheDataMapper = null;
-
 	/**
 	 * Constructor will setup API connection credentials
 	 *
@@ -42,14 +35,16 @@ class NetricApi
 	 */
 	public function __construct($server, $applicationId, $applicationKey, array $cacheConfig = null)
 	{
-		$this->apiCaller = new ApiCaller($server, $applicationId, $applicationKey);
-		$cacheDataMapper = null;
+	    // If cache config was passed then setup a CacheInterface to cache api responses
+        $cache = null;
 		if ($cacheConfig) {
 		    if ($cacheConfig['type'] === 'memcached' && isset($cacheConfig['server'])) {
-		        $this->cacheDataMapper = new MemcachedDataMapper($applicationId, $cacheConfig['server']);
+		        $cache = new MemcachedCache($applicationId, $cacheConfig['server']);
             }
         }
-		$this->identityMapper = new EntityIdentityMapper($this->apiCaller, $this->cacheDataMapper);
+        $this->apiCaller = new ApiCaller($server, $applicationId, $applicationKey, $cache);
+
+        $this->identityMapper = new EntityIdentityMapper($this->apiCaller);
 	}
 
 	/**
@@ -62,7 +57,6 @@ class NetricApi
 	{
 		$collection = new EntityCollection($objType);
 		$collection->setApiCaller($this->apiCaller);
-		$collection->setCacheDataMapper($this->cacheDataMapper);
 		return $collection;
 	}
 
