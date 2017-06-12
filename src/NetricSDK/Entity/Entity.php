@@ -182,4 +182,21 @@ class Entity
 		else
 			return "";
     }
+
+    /**
+     * Export entity values as an array
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $values = $this->getValues();
+        $data = array('obj_type' => $objType);
+
+        foreach ($values as $fieldName=>$value) {
+            $data[$fieldName] = $value;
+        }
+
+        return $data;
+    }
 }

@@ -2,6 +2,7 @@
 namespace NetricSDK\EntityCollection;
 
 use NetricSDK\ApiCallerInterface;
+use NetricSDK\DataMapper\DataMapperInterface;
 use NetricSDK\Entity\Entity;
 
 /**
@@ -89,6 +90,13 @@ class EntityCollection
      * @var Netric\Models\Collection\Aggregation\AggregationInterface[]
      */
     private $aggregations = array();
+
+    /**
+     * Data mapper for caching results
+     *
+     * @var DataMapperInterface
+     */
+    private $cacheDataMapper = null;
     
     /**
      * Class constructor
@@ -163,7 +171,7 @@ class EntityCollection
      * 
      * @param string $fieldName
      * @param string $direction
-     * @return Netric/Models/Collection
+     * @return self
      */
     public function orderBy($fieldName, $direction="ASC")
     {
@@ -299,7 +307,7 @@ class EntityCollection
      * Retrieve an entity from the collection
      * 
      * @param int $offset The offset of the entity to get in the collection
-     * @return \Netric\Models\EntityAbstract
+     * @return Entity
      */
     public function getEntity($offset=0)
     {
@@ -328,10 +336,12 @@ class EntityCollection
         $offset = $offset - $this->offset;
         
         if ($offset >= count($this->entities))
-            return false; // TODO: can expand to get next page for progressive load
+            return null; // TODO: can expand to get next page for progressive load
         
         return $this->entities[$offset];
     }
+
+
     
     /**
      * Add a facet count to the list of facets
@@ -352,8 +362,22 @@ class EntityCollection
      */
     public function load()
     {
-        if ($this->apiCaller)
-            return $this->apiCaller->loadCollection($this);
+        if ($this->cacheDataMapper) {
+            $found = $this->cacheDataMapper->loadCollection($this);
+
+            // If not found we will get -1, otherwise the collection is cached
+            if ($found !== -1) {
+                return $found;
+            }
+        }
+
+        if ($this->apiCaller) {
+            $found = $this->apiCaller->loadCollection($this);
+            if ($this->cacheDataMapper) {
+                // TODO: Cache the list for faster loads next time
+            }
+            return $found;
+        }
         else
             return false;
     }
@@ -412,5 +436,45 @@ class EntityCollection
     public function addAggregation(Collection\Aggregation\AbstractAggregation $agg)
     {
         $this->aggregations[$agg->getName()] = $agg;
+    }
+
+    /**
+     * Set datamapper for caching query results
+     *
+     * @param DataMapperInterface $cacheDataMapper
+     */
+    public function setCacheDataMapper(DataMapperInterface $cacheDataMapper)
+    {
+        $this->cacheDataMapper = $cacheDataMapper;
+    }
+
+    /**
+     * Get a has for this collection
+     *
+     * @return string Unique has for this collection
+     */
+    public function getHash()
+    {
+        $body = "";
+
+        foreach ($this->wheres as $where) {
+            $body .= json_encode($where->toArray());
+        }
+
+        foreach ($this->orderBy as $orderBy) {
+            $body .= json_encode($orderBy);
+        }
+
+        $body .= $this->offset;
+        $body .= $this->limitPerPage;
+
+        $signature = md5 ( $body);
+
+        // Keep it short, it should be unique enough
+        if (strlen($signature) > 32) {
+            $signature = substr($signature, 0, 32);
+        }
+
+        return $signature;
     }
 }

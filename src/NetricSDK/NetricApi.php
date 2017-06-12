@@ -14,16 +14,23 @@ class NetricApi
 	/**
 	 * Instance of an API requestor
 	 *
-	 * @param ApiCaller
+	 * @var ApiCaller
 	 */
 	private $apiCaller = null;
 
 	/**
 	 * Identity ampper for loading entities and keeping only one instance in memeory at once
 	 *
-	 * @param EntityIdentityMapper
+	 * @var EntityIdentityMapper
 	 */
 	private $identityMapper = null;
+
+    /**
+     * Cache data mapper
+     *
+     * @var DataMapperInterface
+     */
+    private $cacheDataMapper = null;
 
 	/**
 	 * Constructor will setup API connection credentials
@@ -39,10 +46,10 @@ class NetricApi
 		$cacheDataMapper = null;
 		if ($cacheConfig) {
 		    if ($cacheConfig['type'] === 'memcached' && isset($cacheConfig['server'])) {
-		        $cacheConfig = new MemcachedDataMapper($applicationId, $cacheConfig['server']);
+		        $this->cacheDataMapper = new MemcachedDataMapper($applicationId, $cacheConfig['server']);
             }
         }
-		$this->identityMapper = new EntityIdentityMapper($this->apiCaller, $cacheConfig);
+		$this->identityMapper = new EntityIdentityMapper($this->apiCaller, $this->cacheDataMapper);
 	}
 
 	/**
@@ -55,6 +62,7 @@ class NetricApi
 	{
 		$collection = new EntityCollection($objType);
 		$collection->setApiCaller($this->apiCaller);
+		$collection->setCacheDataMapper($this->cacheDataMapper);
 		return $collection;
 	}
 

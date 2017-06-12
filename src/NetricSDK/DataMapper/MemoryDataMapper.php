@@ -1,6 +1,8 @@
 <?php
 namespace NetricSDK\DataMapper;
+
 use NetricSDK\Entity\Entity;
+use NetricSDK\EntityCollection\EntityCollection;
 
 /**
  * Cache data in local memory
@@ -52,5 +54,16 @@ class MemoryDataMapper implements DataMapperInterface
         }
 
         return null;
+    }
+
+    /**
+     * Query the backend for entities that match the passed query conditions and set the collection
+     *
+     * @param EntityCollection $collection A collection to query and set entities into
+     * @return int The number of entities retrieved in the current page or -1 if not cached
+     */
+    public function loadCollection(EntityCollection $collection)
+    {
+        return -1;
     }
 }

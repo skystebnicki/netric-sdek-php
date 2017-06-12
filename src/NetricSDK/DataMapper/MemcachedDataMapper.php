@@ -1,7 +1,9 @@
 <?php
 namespace NetricSDK\DataMapper;
+
 use NetricSDK\Entity\Entity;
 use NetricSDK\Entity\EntityFactory;
+use NetricSDK\EntityCollection\EntityCollection;
 
 /**
  * Datamapper used to store remote data locally
@@ -118,6 +120,50 @@ class MemcachedDataMapper implements DataMapperInterface
         }
 
         return null;
+    }
+
+    /**
+     * Query the backend for entities that match the passed query conditions and set the collection
+     *
+     * @param EntityCollection $collection A collection to query and set entities into
+     * @return int The number of entities retrieved in the current page or -1 if not cached
+     */
+    public function loadCollection(EntityCollection $collection)
+    {
+        $hash = $collection->getHash();
+
+        $cachedData = $this->memCached->get($this->applicationId . "-coll-" . $hash);
+
+        if ($cachedData) {
+            $collection->clearEntities();
+            $collection->setTotalNum($cachedData['total_num']);
+            foreach ($cachedData['entities'] as $entityData) {
+                $entity = $this->loadEntityFromData($entityData);
+                $collection->addEntity($entity);
+            }
+            return count($cachedData['entities']);
+        } else {
+            return -1;
+        }
+
+    }
+
+    /**
+     * Save a collection to cache
+     *
+     * @param EntityCollection $collection
+     * @return bool true on success, false on failure
+     */
+    public function saveCollection(EntityCollection $collection)
+    {
+        $hash = $collection->getHash();
+        $data = array('total_num'=>$collection->getTotalNum());
+
+
+        return $this->memCached->set(
+            $this->applicationId . "-coll-" . $hash,
+            json_encode($data)
+        );
     }
 
     /**

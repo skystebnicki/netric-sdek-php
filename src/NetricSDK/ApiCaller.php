@@ -201,7 +201,7 @@ class ApiCaller implements ApiCallerInterface
 			$queryData['conditions'][] = $where->toArray();
 		}
 
-		// Add orer by
+		// Add order by
 		$queryData['order_by'] = $collection->getOrderBy();
 
 		// Call the server to get the query results

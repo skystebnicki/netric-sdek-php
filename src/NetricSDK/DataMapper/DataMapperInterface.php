@@ -1,6 +1,7 @@
 <?php
 namespace NetricSDK\DataMapper;
 use NetricSDK\Entity\Entity;
+use NetricSDK\EntityCollection\EntityCollection;
 
 /**
  * Interface defines common datamapper functions for getting and setting data
@@ -23,4 +24,12 @@ interface DataMapperInterface
      * @return Entity
      */
     public function getEntity($objType, $id);
+
+    /**
+     * Query the backend for entities that match the passed query conditions and set the collection
+     *
+     * @param EntityCollection $collection A collection to query and set entities into
+     * @return int The number of entities retrieved in the current page
+     */
+    public function loadCollection(EntityCollection $collection);
 }
