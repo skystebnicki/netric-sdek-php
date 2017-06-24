@@ -184,7 +184,7 @@ class Entity
     }
 
     /**
-     * Export entity values as an array
+     * Export entity values as an associative array
      *
      * @return array
      */

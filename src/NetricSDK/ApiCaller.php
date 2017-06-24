@@ -2,6 +2,8 @@
 namespace NetricSDK;
 
 use NetricSDK\Cache\CacheInterface;
+use NetricSDK\Entity\Schema\EntitySchemaV1;
+use NetricSDK\Entity\Schema\SchemaFactory;
 use NetricSDK\EntityCollection\EntityCollection;
 use NetricSDK\Entity\EntityFactory;
 use NetricSDK\Entity\Entity;
@@ -76,21 +78,13 @@ class ApiCaller implements ApiCallerInterface
 	 */
 	public function saveEntity(Entity $entity)
 	{
-		$values = $entity->getValues();
-		$objType = $entity->getType();
-
-		$data = array('obj_type' => $objType);
-
-		foreach ($values as $fieldName=>$value) {
-			$data[$fieldName] = $value;
-		}
-
+	    $schema = new EntitySchemaV1();
+	    $data = $schema->getDataFromValues($entity);
 		$ret = $this->sendRequest("entity", "save", $data);
 
 		// Now set any values from the server
-		foreach ($ret as $fieldName=>$value) {
-			$entity->$fieldName = $value;
-		}
+        $newSchema = SchemaFactory::getSchemaFromData($ret);
+        $newSchema->setValuesFromData($entity, $ret);
 
 		return true;
 	}
@@ -385,23 +379,8 @@ class ApiCaller implements ApiCallerInterface
 		}
 
 		$entity = EntityFactory::factory($data['obj_type'], $data['id']);
-
-		foreach ($data as $fieldName=>$fieldValue) {
-			// We don't want to set _fval fields since they are not real entity fields
-			if (substr($fieldName, -5, 5) != '_fval') {
-				// If we are working with fkey, fkey_multi, object, object_multi, then use _fval version
-				if (isset($data[$fieldName . "_fval"])) {
-					$fieldValues = [];
-					foreach ($data[$fieldName . "_fval"] as $id=>$name) {
-
-						$fieldValues[] = ['id'=>$id, 'name'=>$name];
-					}
-					$entity->$fieldName = $fieldValues;
-				} else {
-					$entity->$fieldName = $fieldValue;
-				}
-			}
-		}
+        $schema = SchemaFactory::getSchemaFromData($data);
+        $schema->setValuesFromData($entity, $data);
 
 		return $entity;
 	}
