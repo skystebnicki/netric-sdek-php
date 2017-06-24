@@ -191,7 +191,7 @@ class Entity
     public function toArray()
     {
         $values = $this->getValues();
-        $data = array('obj_type' => $objType);
+        $data = array('obj_type' => $this->objType);
 
         foreach ($values as $fieldName=>$value) {
             $data[$fieldName] = $value;

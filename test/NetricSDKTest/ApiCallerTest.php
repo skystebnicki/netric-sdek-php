@@ -154,15 +154,18 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testLoadCollection()
 	{
+	    // Temp
 		$uniqueTaskname = "testapicaller";
 
 		$task = new Entity("task");
 		$task->name = $uniqueTaskname;
+		$task->done = false;
 		$this->apiCaller->saveEntity($task);
 		$this->testEntities[] = $task;
 
 		$collection = new EntityCollection("task");
 		$collection->where("name")->equals($uniqueTaskname);
+        $collection->where("done")->equals(false);
 		$collection->andWhere("id")->equals($task->id);
 		$this->apiCaller->loadCollection($collection);
 
