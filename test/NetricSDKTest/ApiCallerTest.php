@@ -17,16 +17,16 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * Instance of API caller to test
-     *
-     * @var ApiCaller
+	 *
+	 * @var ApiCaller
 	 */
 	private $apiCaller = null;
 
-    /**
-     * Instance of the ApiCaller with cache
-     *
-     * @var CacheInterface
-     */
+	/**
+	 * Instance of the ApiCaller with cache
+	 *
+	 * @var CacheInterface
+	 */
 	private $cache = null;
 
 	/**
@@ -44,7 +44,7 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 		// The clientSecret is the user's password
 		$clientSecret = "password";
 
-		$this->apiCaller = new ApiCaller("http://integ.netric.com", $clientId, $clientSecret);
+		$this->apiCaller = new ApiCaller("https://integ.netric.com", $clientId, $clientSecret);
 		$this->cache = new MemoryCache();
 	}
 
@@ -101,32 +101,32 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($task->name, $taskFromServer->name);
 	}
 
-    /**
-     * Retrieve an entity by id
-     */
-    public function testGetEntityCached()
-    {
-        $task = new Entity("task");
-        $task->name = "test";
-        $this->apiCaller->saveEntity($task);
-        $this->testEntities[] = $task;
+	/**
+	 * Retrieve an entity by id
+	 */
+	public function testGetEntityCached()
+	{
+		$task = new Entity("task");
+		$task->name = "test";
+		$this->apiCaller->saveEntity($task);
+		$this->testEntities[] = $task;
 
-        $this->apiCaller->setCache($this->cache);
+		$this->apiCaller->setCache($this->cache);
 
-        $this->apiCaller->getEntity("task", $task->id);
+		$this->apiCaller->getEntity("task", $task->id);
 
-        $this->assertNotNull($this->cache->getLastEntry());
-        $cachedData = $this->cache->getLastEntry();
-        $this->assertEquals($task->name, $cachedData['name']);
+		$this->assertNotNull($this->cache->getLastEntry());
+		$cachedData = $this->cache->getLastEntry();
+		$this->assertEquals($task->name, $cachedData['name']);
 
         // Set fake data to the cache so we can make sure apiCaller is using it
-        $this->cache->set($this->cache->lastKeyWritten, ['obj_type'=>'customer', 'id'=>1234]);
-        $loadedFromCache = $this->apiCaller->getEntity("task", $task->id);
+		$this->cache->set($this->cache->lastKeyWritten, ['obj_type' => 'customer', 'id' => 1234]);
+		$loadedFromCache = $this->apiCaller->getEntity("task", $task->id);
 
         // We replaced the task key with the fake one above, see if it loaded the fake/cached data
-        $this->assertEquals('customer', $loadedFromCache->getType());
-        $this->assertEquals(1234, $loadedFromCache->id);
-    }
+		$this->assertEquals('customer', $loadedFromCache->getType());
+		$this->assertEquals(1234, $loadedFromCache->id);
+	}
 
 	/**
 	 * Retrieve an entity by id
@@ -165,13 +165,13 @@ class ApiCallerTest extends PHPUnit_Framework_TestCase
 
 		$collection = new EntityCollection("task");
 		$collection->where("name")->equals($uniqueTaskname);
-        $collection->where("done")->equals(false);
+		$collection->where("done")->equals(false);
 		$collection->andWhere("id")->equals($task->id);
 		$this->apiCaller->loadCollection($collection);
 
 		$this->assertEquals(1, $collection->getTotalNum());
 		$entity = $collection->getEntity();
-        $this->assertNotNull($entity);
+		$this->assertNotNull($entity);
 		$this->assertEquals($uniqueTaskname, $entity->name);
 	}
 }

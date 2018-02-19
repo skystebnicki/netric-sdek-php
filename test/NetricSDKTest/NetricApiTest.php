@@ -36,7 +36,7 @@ class NetricApiTest extends PHPUnit_Framework_TestCase
 		// The clientSecret is the user's password
 		$clientSecret = "password";
 
-		$this->netricApi = new NetricApi("http://integ.netric.com", $clientId, $clientSecret);
+		$this->netricApi = new NetricApi("https://integ.netric.com", $clientId, $clientSecret);
 	}
 
 	/**
