@@ -1,74 +1,195 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="NetricSDKTest" tests="43" assertions="57" failures="0" errors="0" time="30.570944">
-    <testsuite name="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" tests="8" assertions="16" failures="0" errors="0" time="19.637747">
-      <testcase name="testGetAuthToken" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="58" assertions="1" time="0.107165"/>
-      <testcase name="testSaveEntity" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="67" assertions="2" time="5.116655"/>
-      <testcase name="testDeleteEntity" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="78" assertions="1" time="4.952355"/>
-      <testcase name="testGetEntity" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="92" assertions="2" time="2.200516"/>
-      <testcase name="testGetEntityCached" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="107" assertions="4" time="2.955947"/>
-      <testcase name="testGetEntityByUniqueName" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="134" assertions="1" time="2.025467"/>
-      <testcase name="testGetEntityGroupings" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="145" assertions="2" time="0.308749"/>
-      <testcase name="testLoadCollection" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="155" assertions="3" time="1.970893"/>
+  <testsuite name="NetricSDKTest" tests="43" assertions="35" failures="0" errors="12" time="0.252174">
+    <testsuite name="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" tests="8" assertions="0" failures="0" errors="8" time="0.085442">
+      <testcase name="testGetAuthToken" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="58" assertions="0" time="0.017351">
+        <error type="Exception">NetricSDKTest\ApiCallerTest::testGetAuthToken
+Exception: Auth failed: NULL
+
+/var/www/html/src/NetricSDK/ApiCaller.php:257
+/var/www/html/test/NetricSDKTest/ApiCallerTest.php:60
+</error>
+      </testcase>
+      <testcase name="testSaveEntity" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="67" assertions="0" time="0.014654">
+        <error type="Exception">NetricSDKTest\ApiCallerTest::testSaveEntity
+Exception: Auth failed: NULL
+
+/var/www/html/src/NetricSDK/ApiCaller.php:257
+/var/www/html/src/NetricSDK/ApiCaller.php:370
+/var/www/html/src/NetricSDK/ApiCaller.php:290
+/var/www/html/src/NetricSDK/ApiCaller.php:83
+/var/www/html/test/NetricSDKTest/ApiCallerTest.php:71
+</error>
+      </testcase>
+      <testcase name="testDeleteEntity" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="78" assertions="0" time="0.008021">
+        <error type="Exception">NetricSDKTest\ApiCallerTest::testDeleteEntity
+Exception: Auth failed: NULL
+
+/var/www/html/src/NetricSDK/ApiCaller.php:257
+/var/www/html/src/NetricSDK/ApiCaller.php:370
+/var/www/html/src/NetricSDK/ApiCaller.php:290
+/var/www/html/src/NetricSDK/ApiCaller.php:83
+/var/www/html/test/NetricSDKTest/ApiCallerTest.php:82
+</error>
+      </testcase>
+      <testcase name="testGetEntity" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="92" assertions="0" time="0.007688">
+        <error type="Exception">NetricSDKTest\ApiCallerTest::testGetEntity
+Exception: Auth failed: NULL
+
+/var/www/html/src/NetricSDK/ApiCaller.php:257
+/var/www/html/src/NetricSDK/ApiCaller.php:370
+/var/www/html/src/NetricSDK/ApiCaller.php:290
+/var/www/html/src/NetricSDK/ApiCaller.php:83
+/var/www/html/test/NetricSDKTest/ApiCallerTest.php:96
+</error>
+      </testcase>
+      <testcase name="testGetEntityCached" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="107" assertions="0" time="0.009672">
+        <error type="Exception">NetricSDKTest\ApiCallerTest::testGetEntityCached
+Exception: Auth failed: NULL
+
+/var/www/html/src/NetricSDK/ApiCaller.php:257
+/var/www/html/src/NetricSDK/ApiCaller.php:370
+/var/www/html/src/NetricSDK/ApiCaller.php:290
+/var/www/html/src/NetricSDK/ApiCaller.php:83
+/var/www/html/test/NetricSDKTest/ApiCallerTest.php:111
+</error>
+      </testcase>
+      <testcase name="testGetEntityByUniqueName" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="134" assertions="0" time="0.010143">
+        <error type="Exception">NetricSDKTest\ApiCallerTest::testGetEntityByUniqueName
+Exception: Auth failed: NULL
+
+/var/www/html/src/NetricSDK/ApiCaller.php:257
+/var/www/html/src/NetricSDK/ApiCaller.php:370
+/var/www/html/src/NetricSDK/ApiCaller.php:290
+/var/www/html/src/NetricSDK/ApiCaller.php:83
+/var/www/html/test/NetricSDKTest/ApiCallerTest.php:138
+</error>
+      </testcase>
+      <testcase name="testGetEntityGroupings" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="145" assertions="0" time="0.008795">
+        <error type="Exception">NetricSDKTest\ApiCallerTest::testGetEntityGroupings
+Exception: Auth failed: NULL
+
+/var/www/html/src/NetricSDK/ApiCaller.php:257
+/var/www/html/src/NetricSDK/ApiCaller.php:370
+/var/www/html/src/NetricSDK/ApiCaller.php:290
+/var/www/html/src/NetricSDK/ApiCaller.php:182
+/var/www/html/test/NetricSDKTest/ApiCallerTest.php:148
+</error>
+      </testcase>
+      <testcase name="testLoadCollection" class="NetricSDKTest\ApiCallerTest" file="/var/www/html/test/NetricSDKTest/ApiCallerTest.php" line="155" assertions="0" time="0.009119">
+        <error type="Exception">NetricSDKTest\ApiCallerTest::testLoadCollection
+Exception: Auth failed: NULL
+
+/var/www/html/src/NetricSDK/ApiCaller.php:257
+/var/www/html/src/NetricSDK/ApiCaller.php:370
+/var/www/html/src/NetricSDK/ApiCaller.php:290
+/var/www/html/src/NetricSDK/ApiCaller.php:83
+/var/www/html/test/NetricSDKTest/ApiCallerTest.php:163
+</error>
+      </testcase>
     </testsuite>
-    <testsuite name="NetricSDKTest\Entity\MemcachedCacheTest" file="/var/www/html/test/NetricSDKTest/Cache/MemcachedCacheTest.php" tests="2" assertions="2" failures="0" errors="0" time="0.006235">
-      <testcase name="testSet" class="NetricSDKTest\Entity\MemcachedCacheTest" file="/var/www/html/test/NetricSDKTest/Cache/MemcachedCacheTest.php" line="15" assertions="1" time="0.003749"/>
-      <testcase name="testGet" class="NetricSDKTest\Entity\MemcachedCacheTest" file="/var/www/html/test/NetricSDKTest/Cache/MemcachedCacheTest.php" line="21" assertions="1" time="0.002486"/>
+    <testsuite name="NetricSDKTest\Entity\MemcachedCacheTest" file="/var/www/html/test/NetricSDKTest/Cache/MemcachedCacheTest.php" tests="2" assertions="2" failures="0" errors="0" time="0.007763">
+      <testcase name="testSet" class="NetricSDKTest\Entity\MemcachedCacheTest" file="/var/www/html/test/NetricSDKTest/Cache/MemcachedCacheTest.php" line="15" assertions="1" time="0.004460"/>
+      <testcase name="testGet" class="NetricSDKTest\Entity\MemcachedCacheTest" file="/var/www/html/test/NetricSDKTest/Cache/MemcachedCacheTest.php" line="21" assertions="1" time="0.003303"/>
     </testsuite>
-    <testsuite name="NetricSDKTest\Entity\MemoryCacheTest" file="/var/www/html/test/NetricSDKTest/Cache/MemoryCacheTest.php" tests="2" assertions="2" failures="0" errors="0" time="0.004008">
-      <testcase name="testSet" class="NetricSDKTest\Entity\MemoryCacheTest" file="/var/www/html/test/NetricSDKTest/Cache/MemoryCacheTest.php" line="15" assertions="1" time="0.001951"/>
-      <testcase name="testGet" class="NetricSDKTest\Entity\MemoryCacheTest" file="/var/www/html/test/NetricSDKTest/Cache/MemoryCacheTest.php" line="21" assertions="1" time="0.002057"/>
+    <testsuite name="NetricSDKTest\Entity\MemoryCacheTest" file="/var/www/html/test/NetricSDKTest/Cache/MemoryCacheTest.php" tests="2" assertions="2" failures="0" errors="0" time="0.003869">
+      <testcase name="testSet" class="NetricSDKTest\Entity\MemoryCacheTest" file="/var/www/html/test/NetricSDKTest/Cache/MemoryCacheTest.php" line="15" assertions="1" time="0.001923"/>
+      <testcase name="testGet" class="NetricSDKTest\Entity\MemoryCacheTest" file="/var/www/html/test/NetricSDKTest/Cache/MemoryCacheTest.php" line="21" assertions="1" time="0.001946"/>
     </testsuite>
-    <testsuite name="NetricSDKTest\Entity\EntityFactoryTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityFactoryTest.php" tests="4" assertions="4" failures="0" errors="0" time="0.011148">
-      <testsuite name="NetricSDKTest\Entity\EntityFactoryTest::testFactoryCustomer" tests="4" assertions="4" failures="0" errors="0" time="0.011148">
-        <testcase name="testFactoryCustomer with data set #0" assertions="1" time="0.002978"/>
-        <testcase name="testFactoryCustomer with data set #1" assertions="1" time="0.002905"/>
-        <testcase name="testFactoryCustomer with data set #2" assertions="1" time="0.003177"/>
-        <testcase name="testFactoryCustomer with data set #3" assertions="1" time="0.002088"/>
+    <testsuite name="NetricSDKTest\Entity\EntityFactoryTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityFactoryTest.php" tests="4" assertions="4" failures="0" errors="0" time="0.011707">
+      <testsuite name="NetricSDKTest\Entity\EntityFactoryTest::testFactoryCustomer" tests="4" assertions="4" failures="0" errors="0" time="0.011707">
+        <testcase name="testFactoryCustomer with data set #0" assertions="1" time="0.003747"/>
+        <testcase name="testFactoryCustomer with data set #1" assertions="1" time="0.002682"/>
+        <testcase name="testFactoryCustomer with data set #2" assertions="1" time="0.002746"/>
+        <testcase name="testFactoryCustomer with data set #3" assertions="1" time="0.002532"/>
       </testsuite>
     </testsuite>
-    <testsuite name="NetricSDKTest\Entity\EntityGroupingTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityGroupingTest.php" tests="1" assertions="2" failures="0" errors="0" time="0.002792">
-      <testcase name="testToArray" class="NetricSDKTest\Entity\EntityGroupingTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityGroupingTest.php" line="9" assertions="2" time="0.002792"/>
+    <testsuite name="NetricSDKTest\Entity\EntityGroupingTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityGroupingTest.php" tests="1" assertions="2" failures="0" errors="0" time="0.003296">
+      <testcase name="testToArray" class="NetricSDKTest\Entity\EntityGroupingTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityGroupingTest.php" line="9" assertions="2" time="0.003296"/>
     </testsuite>
-    <testsuite name="NetricSDKTest\EntityIdentityMapperTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityIdentityMapperTest.php" tests="2" assertions="2" failures="0" errors="0" time="0.054344">
-      <testcase name="testGetEntity" class="NetricSDKTest\EntityIdentityMapperTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityIdentityMapperTest.php" line="12" assertions="1" time="0.049779"/>
-      <testcase name="testGetEntityByUniqueName" class="NetricSDKTest\EntityIdentityMapperTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityIdentityMapperTest.php" line="32" assertions="1" time="0.004565"/>
+    <testsuite name="NetricSDKTest\EntityIdentityMapperTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityIdentityMapperTest.php" tests="2" assertions="2" failures="0" errors="0" time="0.028642">
+      <testcase name="testGetEntity" class="NetricSDKTest\EntityIdentityMapperTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityIdentityMapperTest.php" line="12" assertions="1" time="0.024500"/>
+      <testcase name="testGetEntityByUniqueName" class="NetricSDKTest\EntityIdentityMapperTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityIdentityMapperTest.php" line="32" assertions="1" time="0.004142"/>
     </testsuite>
-    <testsuite name="NetricSDKTest\Entity\EntityTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityTest.php" tests="15" assertions="15" failures="0" errors="0" time="0.035949">
-      <testcase name="testGetType" class="NetricSDKTest\Entity\EntityTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityTest.php" line="9" assertions="1" time="0.002075"/>
-      <testsuite name="NetricSDKTest\Entity\EntityTest::testMagicSet" tests="6" assertions="6" failures="0" errors="0" time="0.013087">
-        <testcase name="testMagicSet with data set #0" assertions="1" time="0.001999"/>
-        <testcase name="testMagicSet with data set #1" assertions="1" time="0.002342"/>
-        <testcase name="testMagicSet with data set #2" assertions="1" time="0.001982"/>
-        <testcase name="testMagicSet with data set #3" assertions="1" time="0.002556"/>
-        <testcase name="testMagicSet with data set #4" assertions="1" time="0.002031"/>
-        <testcase name="testMagicSet with data set #5" assertions="1" time="0.002177"/>
+    <testsuite name="NetricSDKTest\Entity\EntityTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityTest.php" tests="15" assertions="15" failures="0" errors="0" time="0.039754">
+      <testcase name="testGetType" class="NetricSDKTest\Entity\EntityTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityTest.php" line="9" assertions="1" time="0.002020"/>
+      <testsuite name="NetricSDKTest\Entity\EntityTest::testMagicSet" tests="6" assertions="6" failures="0" errors="0" time="0.014664">
+        <testcase name="testMagicSet with data set #0" assertions="1" time="0.003875"/>
+        <testcase name="testMagicSet with data set #1" assertions="1" time="0.002326"/>
+        <testcase name="testMagicSet with data set #2" assertions="1" time="0.002491"/>
+        <testcase name="testMagicSet with data set #3" assertions="1" time="0.001946"/>
+        <testcase name="testMagicSet with data set #4" assertions="1" time="0.001955"/>
+        <testcase name="testMagicSet with data set #5" assertions="1" time="0.002071"/>
       </testsuite>
-      <testsuite name="NetricSDKTest\Entity\EntityTest::testMagicGet" tests="6" assertions="6" failures="0" errors="0" time="0.016513">
-        <testcase name="testMagicGet with data set #0" assertions="1" time="0.003094"/>
-        <testcase name="testMagicGet with data set #1" assertions="1" time="0.002307"/>
-        <testcase name="testMagicGet with data set #2" assertions="1" time="0.001972"/>
-        <testcase name="testMagicGet with data set #3" assertions="1" time="0.003585"/>
-        <testcase name="testMagicGet with data set #4" assertions="1" time="0.003565"/>
-        <testcase name="testMagicGet with data set #5" assertions="1" time="0.001990"/>
+      <testsuite name="NetricSDKTest\Entity\EntityTest::testMagicGet" tests="6" assertions="6" failures="0" errors="0" time="0.017447">
+        <testcase name="testMagicGet with data set #0" assertions="1" time="0.002075"/>
+        <testcase name="testMagicGet with data set #1" assertions="1" time="0.003787"/>
+        <testcase name="testMagicGet with data set #2" assertions="1" time="0.002312"/>
+        <testcase name="testMagicGet with data set #3" assertions="1" time="0.004511"/>
+        <testcase name="testMagicGet with data set #4" assertions="1" time="0.002512"/>
+        <testcase name="testMagicGet with data set #5" assertions="1" time="0.002250"/>
       </testsuite>
-      <testcase name="testGetName" class="NetricSDKTest\Entity\EntityTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityTest.php" line="66" assertions="1" time="0.002081"/>
-      <testcase name="testGetTeaser" class="NetricSDKTest\Entity\EntityTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityTest.php" line="77" assertions="1" time="0.002194"/>
+      <testcase name="testGetName" class="NetricSDKTest\Entity\EntityTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityTest.php" line="66" assertions="1" time="0.003105"/>
+      <testcase name="testGetTeaser" class="NetricSDKTest\Entity\EntityTest" file="/var/www/html/test/NetricSDKTest/Entity/EntityTest.php" line="77" assertions="1" time="0.002518"/>
     </testsuite>
-    <testsuite name="NetricSDKTest\EntityCollection\EntityCollectionTest" file="/var/www/html/test/NetricSDKTest/EntityCollection/EntityCollectionTest.php" tests="3" assertions="6" failures="0" errors="0" time="0.015584">
-      <testcase name="testWhere" class="NetricSDKTest\EntityCollection\EntityCollectionTest" file="/var/www/html/test/NetricSDKTest/EntityCollection/EntityCollectionTest.php" line="12" assertions="2" time="0.002641"/>
-      <testcase name="testOrderBy" class="NetricSDKTest\EntityCollection\EntityCollectionTest" file="/var/www/html/test/NetricSDKTest/EntityCollection/EntityCollectionTest.php" line="33" assertions="1" time="0.002512"/>
-      <testcase name="testPagination" class="NetricSDKTest\EntityCollection\EntityCollectionTest" file="/var/www/html/test/NetricSDKTest/EntityCollection/EntityCollectionTest.php" line="51" assertions="3" time="0.010431"/>
+    <testsuite name="NetricSDKTest\EntityCollection\EntityCollectionTest" file="/var/www/html/test/NetricSDKTest/EntityCollection/EntityCollectionTest.php" tests="3" assertions="6" failures="0" errors="0" time="0.020296">
+      <testcase name="testWhere" class="NetricSDKTest\EntityCollection\EntityCollectionTest" file="/var/www/html/test/NetricSDKTest/EntityCollection/EntityCollectionTest.php" line="12" assertions="2" time="0.006103"/>
+      <testcase name="testOrderBy" class="NetricSDKTest\EntityCollection\EntityCollectionTest" file="/var/www/html/test/NetricSDKTest/EntityCollection/EntityCollectionTest.php" line="33" assertions="1" time="0.003384"/>
+      <testcase name="testPagination" class="NetricSDKTest\EntityCollection\EntityCollectionTest" file="/var/www/html/test/NetricSDKTest/EntityCollection/EntityCollectionTest.php" line="51" assertions="3" time="0.010809"/>
     </testsuite>
-    <testsuite name="NetricSDKTest\EntityCollection\WhereTest" file="/var/www/html/test/NetricSDKTest/EntityCollection/WhereTest.php" tests="1" assertions="1" failures="0" errors="0" time="0.002131">
-      <testcase name="testEquals" class="NetricSDKTest\EntityCollection\WhereTest" file="/var/www/html/test/NetricSDKTest/EntityCollection/WhereTest.php" line="12" assertions="1" time="0.002131"/>
+    <testsuite name="NetricSDKTest\EntityCollection\WhereTest" file="/var/www/html/test/NetricSDKTest/EntityCollection/WhereTest.php" tests="1" assertions="1" failures="0" errors="0" time="0.002232">
+      <testcase name="testEquals" class="NetricSDKTest\EntityCollection\WhereTest" file="/var/www/html/test/NetricSDKTest/EntityCollection/WhereTest.php" line="12" assertions="1" time="0.002232"/>
     </testsuite>
-    <testsuite name="NetricSDKTest\NetricApiTest" file="/var/www/html/test/NetricSDKTest/NetricApiTest.php" tests="5" assertions="7" failures="0" errors="0" time="10.801006">
-      <testcase name="testCreateEntityCollection" class="NetricSDKTest\NetricApiTest" file="/var/www/html/test/NetricSDKTest/NetricApiTest.php" line="55" assertions="1" time="0.004419"/>
-      <testcase name="testGetEntity" class="NetricSDKTest\NetricApiTest" file="/var/www/html/test/NetricSDKTest/NetricApiTest.php" line="64" assertions="1" time="2.077910"/>
-      <testcase name="testGetEntityByUniqueName" class="NetricSDKTest\NetricApiTest" file="/var/www/html/test/NetricSDKTest/NetricApiTest.php" line="82" assertions="1" time="3.922824"/>
-      <testcase name="testGetEntityGroupings" class="NetricSDKTest\NetricApiTest" file="/var/www/html/test/NetricSDKTest/NetricApiTest.php" line="96" assertions="2" time="0.525114"/>
-      <testcase name="testSaveEntity" class="NetricSDKTest\NetricApiTest" file="/var/www/html/test/NetricSDKTest/NetricApiTest.php" line="106" assertions="2" time="4.270739"/>
+    <testsuite name="NetricSDKTest\NetricApiTest" file="/var/www/html/test/NetricSDKTest/NetricApiTest.php" tests="5" assertions="1" failures="0" errors="4" time="0.049173">
+      <testcase name="testCreateEntityCollection" class="NetricSDKTest\NetricApiTest" file="/var/www/html/test/NetricSDKTest/NetricApiTest.php" line="55" assertions="1" time="0.004626"/>
+      <testcase name="testGetEntity" class="NetricSDKTest\NetricApiTest" file="/var/www/html/test/NetricSDKTest/NetricApiTest.php" line="64" assertions="0" time="0.011152">
+        <error type="Exception">NetricSDKTest\NetricApiTest::testGetEntity
+Exception: Auth failed: NULL
+
+/var/www/html/src/NetricSDK/ApiCaller.php:257
+/var/www/html/src/NetricSDK/ApiCaller.php:370
+/var/www/html/src/NetricSDK/ApiCaller.php:290
+/var/www/html/src/NetricSDK/ApiCaller.php:83
+/var/www/html/src/NetricSDK/NetricApi.php:107
+/var/www/html/test/NetricSDKTest/NetricApiTest.php:69
+</error>
+      </testcase>
+      <testcase name="testGetEntityByUniqueName" class="NetricSDKTest\NetricApiTest" file="/var/www/html/test/NetricSDKTest/NetricApiTest.php" line="82" assertions="0" time="0.010945">
+        <error type="Exception">NetricSDKTest\NetricApiTest::testGetEntityByUniqueName
+Exception: Auth failed: NULL
+
+/var/www/html/src/NetricSDK/ApiCaller.php:257
+/var/www/html/src/NetricSDK/ApiCaller.php:370
+/var/www/html/src/NetricSDK/ApiCaller.php:290
+/var/www/html/src/NetricSDK/ApiCaller.php:83
+/var/www/html/src/NetricSDK/NetricApi.php:107
+/var/www/html/test/NetricSDKTest/NetricApiTest.php:86
+</error>
+      </testcase>
+      <testcase name="testGetEntityGroupings" class="NetricSDKTest\NetricApiTest" file="/var/www/html/test/NetricSDKTest/NetricApiTest.php" line="96" assertions="0" time="0.010710">
+        <error type="Exception">NetricSDKTest\NetricApiTest::testGetEntityGroupings
+Exception: Auth failed: NULL
+
+/var/www/html/src/NetricSDK/ApiCaller.php:257
+/var/www/html/src/NetricSDK/ApiCaller.php:370
+/var/www/html/src/NetricSDK/ApiCaller.php:290
+/var/www/html/src/NetricSDK/ApiCaller.php:182
+/var/www/html/src/NetricSDK/NetricApi.php:96
+/var/www/html/test/NetricSDKTest/NetricApiTest.php:99
+</error>
+      </testcase>
+      <testcase name="testSaveEntity" class="NetricSDKTest\NetricApiTest" file="/var/www/html/test/NetricSDKTest/NetricApiTest.php" line="106" assertions="0" time="0.011740">
+        <error type="Exception">NetricSDKTest\NetricApiTest::testSaveEntity
+Exception: Auth failed: NULL
+
+/var/www/html/src/NetricSDK/ApiCaller.php:257
+/var/www/html/src/NetricSDK/ApiCaller.php:370
+/var/www/html/src/NetricSDK/ApiCaller.php:290
+/var/www/html/src/NetricSDK/ApiCaller.php:83
+/var/www/html/src/NetricSDK/NetricApi.php:107
+/var/www/html/test/NetricSDKTest/NetricApiTest.php:111
+</error>
+      </testcase>
     </testsuite>
   </testsuite>
 </testsuites>

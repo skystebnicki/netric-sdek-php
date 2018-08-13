@@ -5,22 +5,21 @@ namespace NetricSDKTest\Entity;
 use PHPUnit_Framework_TestCase;
 use NetricSDK\Entity\EntityFactory;
 
-
 class EntityFactoryTest extends PHPUnit_Framework_TestCase
 {
-	/**
+    /**
      * @dataProvider objTypesProvider
      */
-	public function testFactoryCustomer($objType, $expectedInstance)
-	{
-		$entity = EntityFactory::factory($objType);
+    public function testFactoryCustomer($objType, $expectedInstance)
+    {
+        $entity = EntityFactory::factory($objType);
         $this->assertInstanceOf($expectedInstance, $entity);
-	}
+    }
 
-	/**
-	 * Add each custom object type we are loading here
-	 */
-	public function objTypesProvider()
+    /**
+     * Add each custom object type we are loading here
+     */
+    public function objTypesProvider()
     {
         return [
             ["customer", 'NetricSDK\Entity\Type\CustomerEntity'],

@@ -5,26 +5,27 @@ use PHPUnit_Framework_TestCase;
 use NetricSDK\EntityCollection\EntityCollection;
 
 class EntityCollectionTest extends PHPUnit_Framework_TestCase
-{    
+{
+
     /**
      * Test addition a filter condition to a collection
      */
     public function testWhere()
     {
-        $collection = new EntityCollection("customer");        
+        $collection = new EntityCollection("customer");
         $collection->where('name')->equals("test");
         //$collection->orWhere('fieldname')->isGreaterThan("value");
         //$collection->andWhere('fieldname')->isLessThan("value");
         
         // Get the protected and private values
-		$refColl = new \ReflectionObject($collection);
-		$wheresProp = $refColl->getProperty('wheres');
-		$wheresProp->setAccessible(true);
+        $refColl = new \ReflectionObject($collection);
+        $wheresProp = $refColl->getProperty('wheres');
+        $wheresProp->setAccessible(true);
 
-		// Test values
+        // Test values
         $wheres = $wheresProp->getValue($collection);
-		$this->assertEquals("name", $wheres[0]->fieldName, "Where name not set");
-		$this->assertEquals("test", $wheres[0]->value, "Where condtiion value not set");
+        $this->assertEquals("name", $wheres[0]->fieldName, "Where name not set");
+        $this->assertEquals("test", $wheres[0]->value, "Where condtiion value not set");
     }
     
     /**
@@ -32,17 +33,17 @@ class EntityCollectionTest extends PHPUnit_Framework_TestCase
      */
     public function testOrderBy()
     {
-        $collection = new EntityCollection("customer");        
+        $collection = new EntityCollection("customer");
         $collection->orderBy("name");
         
         // Get the protected and private values
-		$refColl = new \ReflectionObject($collection);
-		$orderByProp = $refColl->getProperty('orderBy');
-		$orderByProp->setAccessible(true);
+        $refColl = new \ReflectionObject($collection);
+        $orderByProp = $refColl->getProperty('orderBy');
+        $orderByProp->setAccessible(true);
 
-		// Test values
+        // Test values
         $orderBy = $orderByProp->getValue($collection);
-		$this->assertEquals("name", $orderBy[0]['field_name'], "Order by name not set");
+        $this->assertEquals("name", $orderBy[0]['field_name'], "Order by name not set");
     }
     
     /**

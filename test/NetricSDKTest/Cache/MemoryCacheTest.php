@@ -5,7 +5,6 @@ namespace NetricSDKTest\Entity;
 use PHPUnit_Framework_TestCase;
 use NetricSDK\Cache\MemoryCache;
 
-
 /**
  * Class MemcachedCacheTest
  * @group integration
